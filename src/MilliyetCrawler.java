@@ -27,7 +27,8 @@ public class MilliyetCrawler extends Crawler {
         extractLinks(links1, linksList);
         extractLinks(links2, linksList);
         extractLinks(links3, linksList);
-        System.out.println(linksList);
+        for (int i =0 ; i<linksList.size(); i++)
+           System.out.println(linksList.get(i));
     }
 
     private void extractLinks(Elements links, ArrayList<String> linksList){
