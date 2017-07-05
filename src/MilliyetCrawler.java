@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by mohammed on 05.07.2017.
  */
-public class MillietCrawler extends Crawler {
+public class MilliyetCrawler extends Crawler {
 
     public void getLinks() {
         Document doc = null;
