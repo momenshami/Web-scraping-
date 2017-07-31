@@ -1,3 +1,6 @@
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -6,9 +9,13 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class bbcCrwler extends Crawler {
+
+    private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public void getLinks() throws Exception {
         Document doc = Jsoup.connect("http://www.bbc.com/turkce").get();
@@ -34,31 +41,31 @@ public class bbcCrwler extends Crawler {
         String linksFile = "BBClinksList.txt";
 
         ArrayList<String> fileArray = new ArrayList();
-        if (isFileNotExist(linksFile)){
-            createNewFile(linksFile);
-        }
-        fileArray = readFromFile(fileArray, linksFile);
-        Set<String> set = new HashSet<String>();
+        ArrayList<String> newsList = new ArrayList<String>();
 
 
-        for (int i = 0; i <linksList.size(); i++) {
-            set.add(linksListNonDuplicates.get(i));
-        }
-        for (int j = 0; j <fileArray.size() ; j++) {
-            set.add(fileArray.get(j));
-        }
+        newsList = getNewUsingBoilerPipe(linksListNonDuplicates);
 
-        createNewFile(linksFile);
+        MongoClient mongoClient = new MongoClient("localhost", 27017); // connect to database
+        MongoDatabase database = mongoClient.getDatabase("news"); // create database
+        MongoCollection<org.bson.Document> collection = database.getCollection("BBCTables"); // create collection
 
-        Iterator it = set.iterator();
-        while(it.hasNext()) {
-            String ss= (String) it.next();
-            addLinksToFile(ss,linksFile);
-        }
-        ArrayList<String> finalList= new ArrayList<String>(set);
-        System.out.println(finalList.size());
-        createNewFile(newsFile);
-        usingBoilerPipe(finalList,newsFile);
+        MongoDatabase database2 = mongoClient.getDatabase("linksCounter");
+
+        MongoCollection<org.bson.Document> collection2 = database2.getCollection("CounterBBC"); // create collection
+        ArrayList<String>  newlinks = new ArrayList<String>();
+
+        storeInMongodb(linksListNonDuplicates, newsList, collection,collection2 ,"BBC" );
+    }
+
+    @Override
+    public void storeInMongodb(ArrayList<String> linksList, ArrayList<String> newsList, MongoCollection<org.bson.Document> collection,
+                               MongoCollection<org.bson.Document> collection2, String webSiteName) {
+        super.storeInMongodb(linksList, newsList, collection, collection2, webSiteName);
+    }
+    public ArrayList<String> getNewUsingBoilerPipe(ArrayList<String> linksList) throws IOException {
+
+        return super.getNewUsingBoilerPipe(linksList);
     }
 
     @Override

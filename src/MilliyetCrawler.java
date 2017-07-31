@@ -1,26 +1,24 @@
+
+import com.mongodb.*;
 import com.mongodb.client.*;
-import com.mongodb.util.JSON;
-import org.bson.conversions.Bson;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import com.mongodb.MongoClient;
-import org.codehaus.jackson.map.ObjectMapper;
+
 import com.mongodb.client.MongoDatabase;
 
+
 public class MilliyetCrawler extends Crawler {
+    private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-
-public  String myJsonConvertor(String link)
-{
-    return "{'link': '"+ link+"'}";
-}
     public void getLinks() throws Exception {
         Document doc = null;
         try {
@@ -31,86 +29,69 @@ public  String myJsonConvertor(String link)
 
         org.jsoup.select.Elements links1 = doc.select(".flashbar   a");
         org.jsoup.select.Elements links2 = doc.select(".flashbar1 .top_p1 a");
-//        org.jsoup.select.Elements links3 = doc.select(".flashbar1 .top_p2 a");
-//        org.jsoup.select.Elements links4 = doc.select(".flashbar1 .tnw a");
-//        org.jsoup.select.Elements links5 = doc.select(".manset  a");
+        org.jsoup.select.Elements links3 = doc.select(".flashbar1 .top_p2 a");
+        org.jsoup.select.Elements links4 = doc.select(".flashbar1 .tnw a");
+        org.jsoup.select.Elements links5 = doc.select(".manset  a");
+//                System.out.println(link1);
 
 
-        ArrayList<String> linksList = new ArrayList<String> ();
+        ArrayList<String> linksList = new ArrayList<String>();
         extractLinks(links1, linksList);
-        extractLinks(links2, linksList);
+//        extractLinks(links2, linksList);
 //        extractLinks(links3, linksList);
 //        extractLinks(links4, linksList);
 //        extractLinks(links5, linksList);
-        String newsFile= "milliyetNews.txt";
+        String newsFile = "milliyetNews.txt";
         String linksFile = "milliyetlinksList.txt";
 
-       // addLinksToFile(linksList,linksFile);
-        ArrayList<String> fileArray = new ArrayList();
+         ArrayList<String> fileArray = new ArrayList();
         ArrayList<String> newsList = new ArrayList<String>();
 
 
-        newsList=getNewUsingBoilerPipe(linksList);
+        newsList = getNewUsingBoilerPipe(linksList);
 
+        MongoClient mongoClient = new MongoClient("localhost", 27017); // connect to database
+        MongoDatabase database = mongoClient.getDatabase("news"); // create database
+        MongoCollection<org.bson.Document> collection = database.getCollection("milliyetTables"); // create collection
 
-//        for (int i = 00; i <newsList.size() ; i++) {
-//            System.out.println(linksList.get(i));
-//            System.out.println(newsList.get(i));
-//        }
+        MongoDatabase database2 = mongoClient.getDatabase("linksCounter");
+        database2.drop();
+        database.drop();
 
+        MongoCollection<org.bson.Document> collection2 = database2.getCollection("Countermilliyet"); // create collection
+        ArrayList<String>  newlinks = new ArrayList<String>();
 
+        storeInMongodb(linksList, newsList, collection,collection2 ,"milliyet" );
 
-        for (int i = 0; i <linksList.size() ; i++) {
-         //   System.out.println(myJsonConvertor(linksList.get(i)));
+        DB db = mongoClient.getDB("news");
+        DBCollection table2 = db.getCollection("milliyetTables");
 
-        }
-        ObjectMapper mapper = new ObjectMapper();
-       MongoClient mongoClient = new MongoClient( "localhost" , 27017 ); // connect to database
+        BasicDBObject searchQuery = new BasicDBObject();
 
-       MongoDatabase database = mongoClient.getDatabase("milliData"); // create databse
-       MongoCollection<org.bson.Document> collection = database.getCollection("news"); // create collection
+        DBCursor cursor = table2.find(searchQuery);
 
-        for (int i = 0; i <linksList.size() ; i++) {
-            String x= linksList.get(i);
-            org.bson.Document toInsert = new org.bson.Document("links ", newsList.get(i));
-            collection.insertOne(toInsert);
-        }
-
-        MongoDatabase database2 = mongoClient.getDatabase("milliLinks"); // create databse
-        MongoCollection<org.bson.Document> collection2 = database2.getCollection("links"); // create collection
-
-        for (int i = 0; i <linksList.size() ; i++) {
-            String x= linksList.get(i);
-            org.bson.Document toInsert = new org.bson.Document("links", linksList.get(i));
-            org.bson.Document toInsert2 = new org.bson.Document("news", newsList.get(i));
-            collection2.insertOne(toInsert2);
-            collection2.insertOne(toInsert);
+        while (cursor.hasNext()) {
+             String news=  cursor.next().toString();
+            System.out.println(  "   "+ news);
 
 
         }
 
 
+     }
 
-
-
-        for(Object x : collection.find((Bson) new org.bson.Document())) {
-            // System.out.println(x.toString());
-        }
-        for(Object x : collection2.find((Bson) new org.bson.Document())) {
-            System.out.println(x.toString());
-        }
-
+    @Override
+    public void storeInMongodb(ArrayList<String> linksList, ArrayList<String> newsList, MongoCollection<org.bson.Document> collection,
+                               MongoCollection<org.bson.Document> collection2, String webSiteName) {
+        super.storeInMongodb(linksList, newsList, collection, collection2, webSiteName);
     }
-
-
-
 //        if (isFileNotExist(linksFile)){
 //            createNewFile(linksFile);
 //        }
 //        fileArray = readFromFile(fileArray, linksFile);
 //         Set<String> set = new HashSet<String>();
 
-//        for (int i = 0; i <linksList.size(); i++) {
+    //        for (int i = 0; i <linksList.size(); i++) {
 //            set.add(linksList.get(i));
 //        }
 //            for (int j = 0; j <fileArray.size() ; j++) {
@@ -134,7 +115,6 @@ public  String myJsonConvertor(String link)
     }
 
 
-
     @Override
     public boolean isFileNotExist(String FileName) {
         return super.isFileNotExist(FileName);
@@ -146,9 +126,10 @@ public  String myJsonConvertor(String link)
     }
 
     @Override
-    public boolean isLinkNotExist(String link, String linksFile){
+    public boolean isLinkNotExist(String link, String linksFile) {
         return super.isLinkNotExist(link, linksFile);
     }
+
     private ArrayList readFromFile(ArrayList fileArray, String linksFile) throws FileNotFoundException {
 
         Scanner scanner = new Scanner(new File(linksFile));
@@ -162,7 +143,7 @@ public  String myJsonConvertor(String link)
     }
 
 
-    private void extractLinks(Elements links, ArrayList<String> linksList){
+    private void extractLinks(Elements links, ArrayList<String> linksList) {
         for (Element element : links) {
             String link1 = element.attr("href");
             if (!linksList.contains(link1)) {
@@ -170,8 +151,9 @@ public  String myJsonConvertor(String link)
             }
         }
     }
-    public void usingBoilerPipe(ArrayList<String> linksList, String fileName)throws Exception{
-    super.usingBoilerPipe(linksList, fileName);
+
+    public void usingBoilerPipe(ArrayList<String> linksList, String fileName) throws Exception {
+        super.usingBoilerPipe(linksList, fileName);
 
     }
 

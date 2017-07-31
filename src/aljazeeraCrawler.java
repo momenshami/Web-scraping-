@@ -1,3 +1,8 @@
+import com.mongodb.*;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -6,9 +11,13 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class aljazeeraCrawler extends  Crawler {
+    private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
     public void getLinks() throws Exception {
         Document doc = Jsoup.connect("http://www.aljazeera.com.tr/front").get();
         ArrayList<String> linksList = new ArrayList<String> ();
@@ -19,35 +28,47 @@ public class aljazeeraCrawler extends  Crawler {
         extractLinks(links1, linksList);
         String newsFile= "aljazeeraNews.txt";
         String linksFile = "aljazeeralinksList.txt";
-
         ArrayList<String> fileArray = new ArrayList();
-        if (isFileNotExist(linksFile)){
-            createNewFile(linksFile);
-        }
-        fileArray = readFromFile(fileArray, linksFile);
-        Set<String> set = new HashSet<String>();
+        ArrayList<String> newsList = new ArrayList<String>();
 
 
-        for (int i = 0; i <linksList.size(); i++) {
-            set.add(linksList.get(i));
-        }
-        for (int j = 0; j <fileArray.size() ; j++) {
-            set.add(fileArray.get(j));
-        }
+        newsList = getNewUsingBoilerPipe(linksList);
 
-        createNewFile(linksFile);
+        MongoClient mongoClient = new MongoClient("localhost", 27017); // connect to database
+        MongoDatabase database = mongoClient.getDatabase("news"); // create database
+        MongoCollection<org.bson.Document> collection = database.getCollection("aljazeeraTables"); // create collection
 
-        Iterator it = set.iterator();
-        while(it.hasNext()) {
-            String ss= (String) it.next();
-            addLinksToFile(ss,linksFile);
+        MongoDatabase database2 = mongoClient.getDatabase("linksCounter");
+
+        MongoCollection<org.bson.Document> collection2 = database2.getCollection(" Counteraljazeera"); // create collection
+        ArrayList<String>  newlinks = new ArrayList<String>();
+
+        storeInMongodb(linksList, newsList, collection,collection2 ,"aljazeera" );
+
+        DB db = mongoClient.getDB("linksCounter");
+        DBCollection table2 = db.getCollection("linksCounteraljazeera");
+
+        BasicDBObject searchQuery = new BasicDBObject();
+
+        DBCursor cursor = table2.find(searchQuery);
+
+        while (cursor.hasNext()) {
+            String news=  cursor.next().toString();
+            System.out.println(  "   "+ news);
+
+
         }
-        ArrayList<String> finalList= new ArrayList<String>(set);
-        System.out.println(finalList.size());
-        createNewFile(newsFile);
-        usingBoilerPipe(finalList,newsFile);
     }
 
+    @Override
+    public void storeInMongodb(ArrayList<String> linksList, ArrayList<String> newsList, MongoCollection<org.bson.Document> collection,
+                               MongoCollection<org.bson.Document> collection2, String webSiteName) {
+        super.storeInMongodb(linksList, newsList, collection, collection2, webSiteName);
+    }
+    public ArrayList<String> getNewUsingBoilerPipe(ArrayList<String> linksList) throws IOException {
+
+        return super.getNewUsingBoilerPipe(linksList);
+    }
     @Override
     public boolean isFileNotExist(String FileName) {
         return super.isFileNotExist(FileName);
