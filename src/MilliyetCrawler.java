@@ -32,114 +32,48 @@ public class MilliyetCrawler extends Crawler {
         org.jsoup.select.Elements links3 = doc.select(".flashbar1 .top_p2 a");
         org.jsoup.select.Elements links4 = doc.select(".flashbar1 .tnw a");
         org.jsoup.select.Elements links5 = doc.select(".manset  a");
-//                System.out.println(link1);
 
 
         ArrayList<String> linksList = new ArrayList<String>();
         extractLinks(links1, linksList);
-//        extractLinks(links2, linksList);
-//        extractLinks(links3, linksList);
-//        extractLinks(links4, linksList);
-//        extractLinks(links5, linksList);
-        String newsFile = "milliyetNews.txt";
-        String linksFile = "milliyetlinksList.txt";
+        extractLinks(links2, linksList);
+        extractLinks(links3, linksList);
+        extractLinks(links4, linksList);
+        extractLinks(links5, linksList);
 
-         ArrayList<String> fileArray = new ArrayList();
+        ArrayList<String> fileArray = new ArrayList();
         ArrayList<String> newsList = new ArrayList<String>();
 
 
         newsList = getNewUsingBoilerPipe(linksList);
+        storeInDatabase(newsList,linksList);
+    }
 
-        MongoClient mongoClient = new MongoClient("localhost", 27017); // connect to database
-        MongoDatabase database = mongoClient.getDatabase("news"); // create database
-        MongoCollection<org.bson.Document> collection = database.getCollection("milliyetTables"); // create collection
-
-        MongoDatabase database2 = mongoClient.getDatabase("linksCounter");
-        database2.drop();
-        database.drop();
-
-        MongoCollection<org.bson.Document> collection2 = database2.getCollection("Countermilliyet"); // create collection
-        ArrayList<String>  newlinks = new ArrayList<String>();
-
-        storeInMongodb(linksList, newsList, collection,collection2 ,"milliyet" );
-
-        DB db = mongoClient.getDB("news");
-        DBCollection table2 = db.getCollection("milliyetTables");
-
-        BasicDBObject searchQuery = new BasicDBObject();
-
-        DBCursor cursor = table2.find(searchQuery);
-
-        while (cursor.hasNext()) {
-             String news=  cursor.next().toString();
-            System.out.println(  "   "+ news);
-
-
-        }
-
-
-     }
+    @Override
+    public void graphs(String webSiteName, DBCollection newsInfo) {
+        super.graphs(webSiteName, newsInfo);
+    }
 
     @Override
     public void storeInMongodb(ArrayList<String> linksList, ArrayList<String> newsList, MongoCollection<org.bson.Document> collection,
                                MongoCollection<org.bson.Document> collection2, String webSiteName) {
         super.storeInMongodb(linksList, newsList, collection, collection2, webSiteName);
     }
-//        if (isFileNotExist(linksFile)){
-//            createNewFile(linksFile);
-//        }
-//        fileArray = readFromFile(fileArray, linksFile);
-//         Set<String> set = new HashSet<String>();
 
-    //        for (int i = 0; i <linksList.size(); i++) {
-//            set.add(linksList.get(i));
-//        }
-//            for (int j = 0; j <fileArray.size() ; j++) {
-//                    set.add(fileArray.get(j));
-//               }
-//
-//         createNewFile(linksFile);
-//
-//        Iterator it = set.iterator();
-//        while(it.hasNext()) {
-//            String ss= (String) it.next();
-//          addLinksToFile(ss,linksFile);
-//         }
-//        ArrayList<String> finalList= new ArrayList<String>(set);
-//        System.out.println(finalList.size());
-//        createNewFile(newsFile);
-//      usingBoilerPipe(finalList,newsFile);
     public ArrayList<String> getNewUsingBoilerPipe(ArrayList<String> linksList) throws IOException {
 
         return super.getNewUsingBoilerPipe(linksList);
     }
 
+    public void plotGraph(String s) {
+        MongoClient mongoClient = new MongoClient("localhost", 27017); // connect to database
 
-    @Override
-    public boolean isFileNotExist(String FileName) {
-        return super.isFileNotExist(FileName);
-    }
 
-    @Override
-    public void createNewFile(String fileName) throws IOException {
-        super.createNewFile(fileName);
-    }
+        DB db = mongoClient.getDB("linksCounter2");
+        DBCollection counter = db.getCollection("Countermilliyet");
+        BasicDBObject searchQuery = new BasicDBObject();
+        graphs("milliyet", counter);
 
-    @Override
-    public boolean isLinkNotExist(String link, String linksFile) {
-        return super.isLinkNotExist(link, linksFile);
-    }
-
-    private ArrayList readFromFile(ArrayList fileArray, String linksFile) throws FileNotFoundException {
-
-        Scanner scanner = new Scanner(new File(linksFile));
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            fileArray.add(line);
-        }
-        scanner.close();
-
-        return fileArray;
     }
 
 
@@ -152,9 +86,17 @@ public class MilliyetCrawler extends Crawler {
         }
     }
 
-    public void usingBoilerPipe(ArrayList<String> linksList, String fileName) throws Exception {
-        super.usingBoilerPipe(linksList, fileName);
+    public void storeInDatabase(ArrayList<String> newsList,ArrayList<String> linksList) {
+
+        MongoClient mongoClient = new MongoClient("localhost", 27017); // connect to database
+        MongoDatabase database = mongoClient.getDatabase("news2"); // create database
+        MongoCollection<org.bson.Document> collection = database.getCollection("milliyetTables"); // create collection
+
+        MongoDatabase database2 = mongoClient.getDatabase("linksCounter2");
+        MongoCollection<org.bson.Document> collection2 = database2.getCollection("Countermilliyet"); // create collection
+        ArrayList<String> newlinks = new ArrayList<String>();
+
+        storeInMongodb(linksList, newsList, collection, collection2, "milliyet");
 
     }
-
 }

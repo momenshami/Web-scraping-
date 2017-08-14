@@ -1,3 +1,6 @@
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -21,35 +24,41 @@ public class cnnCrawler  extends Crawler {
         Document doc = Jsoup.connect("http://www.cnnturk.com/").get();
         ArrayList<String> linksList = new ArrayList<String> ();
 
-          Elements links1 = doc.select("body > div.main-container > div.container.headline-container > div:nth-child(1) > div #auto-carousel > ol a");
+          Elements links1 = doc.select("body > div.main-container > div.container.headline-container > div:nth-child(1) > div a");
           Elements links2 = doc.select("body > div.main-container > div.container.headline-container > div:nth-child(3) a");
           Elements links3 = doc.select("body > div.main-container > div.container.headline-container > div.row.flex-order-1 > div.col-md-8.col-sm-12 > div > ol a");
 
-        extractLinks(links1, linksList);
+         extractLinks(links1, linksList);
          extractLinks(links2, linksList);
          extractLinks(links3, linksList);
-//        for (int i = 0; i <linksList.size() ; i++) {
-//            System.out.println(linksList.get(i));
-//        }
 
-        String newsFile= "CNNNew.txt";
-        String linksFile = "CNNlinksList.txt";
         ArrayList<String> fileArray = new ArrayList();
         ArrayList<String> newsList = new ArrayList<String>();
+        ArrayList<String> newslistWith_http = new ArrayList();
+
+        for (int i = 0; i <linksList.size() ; i++) {
+            newslistWith_http.add("https://www.cnnturk.com"+linksList.get(i));
+        }
 
 
-        newsList = getNewUsingBoilerPipe(linksList);
+         newsList = getNewUsingBoilerPipe(newslistWith_http);
+        storeInDatabase(newsList,newslistWith_http);
+    }
 
+    private void storeInDatabase(ArrayList<String> newsList, ArrayList<String> linksList) {
         MongoClient mongoClient = new MongoClient("localhost", 27017); // connect to database
-        MongoDatabase database = mongoClient.getDatabase("news"); // create database
+        MongoDatabase database = mongoClient.getDatabase("news2"); // create database
         MongoCollection<org.bson.Document> collection = database.getCollection("CnnTable"); // create collection
 
-        MongoDatabase database2 = mongoClient.getDatabase("linksCounter");
+        MongoDatabase database2 = mongoClient.getDatabase("linksCounter2");
 
-        MongoCollection<org.bson.Document> collection2 = database2.getCollection("CountNewLinks"); // create collection
+        MongoCollection<org.bson.Document> collection2 = database2.getCollection("CounterCNN"); // create collection
         ArrayList<String>  newlinks = new ArrayList<String>();
-
         storeInMongodb(linksList, newsList, collection,collection2 ,"CNN" );
+        DB db = mongoClient.getDB("linksCounter");
+        DBCollection counter = db.getCollection("CounterCNN");
+        BasicDBObject searchQuery = new BasicDBObject();
+       // graphs("bbc", counter);
     }
 
     @Override
@@ -61,30 +70,14 @@ public class cnnCrawler  extends Crawler {
 
         return super.getNewUsingBoilerPipe(linksList);
     }
-    @Override
-    public boolean isFileNotExist(String FileName) {
-        return super.isFileNotExist(FileName);
-    }
 
-    @Override
-    public void createNewFile(String fileName) throws IOException {
-        super.createNewFile(fileName);
-    }
+    public void plotGraph(String s) {
+        MongoClient mongoClient = new MongoClient("localhost", 27017); // connect to database
 
-    @Override
-    public boolean isLinkNotExist(String link, String linksFile){
-        return super.isLinkNotExist(link, linksFile);
-    }
-    private ArrayList readFromFile(ArrayList fileArray, String linksFile) throws FileNotFoundException {
-
-        Scanner scanner = new Scanner(new File(linksFile));
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            fileArray.add(line);
-        }
-        scanner.close();
-
-        return fileArray;
+        DB db = mongoClient.getDB("linksCounter2");
+        DBCollection counter = db.getCollection("CounterCNN");
+        BasicDBObject searchQuery = new BasicDBObject();
+        graphs(s, counter);
     }
 
 
@@ -92,16 +85,13 @@ public class cnnCrawler  extends Crawler {
         for (Element element : links) {
 
             String link1 = element.attr("href");
+
             if (!linksList.contains(link1)) {
-                 if(! link1.contains("http"))
-                    linksList.add("http://www.cnnturk.com/"+link1);
-                else
-                    linksList.add(""+link1);
+                          linksList.add(link1);
+                System.out.println("\n link is "+link1);
+
             }
         }
     }
-    public void usingBoilerPipe(ArrayList<String> linksList, String fileName)throws Exception{
-        super.usingBoilerPipe(linksList, fileName);
 
-    }
 }
