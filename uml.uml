@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="811.0" y="182.0">HurriyetCrawler</node>
+    <node x="487.00000000000006" y="182.0">SabahCrawler</node>
+    <node x="323.00000000000006" y="182.0">OdatvCrawler</node>
+    <node x="0.0" y="182.0">BbcCrwler</node>
+    <node x="1137.0" y="182.0">MilliyetCrawler</node>
+    <node x="1111.6363636363635" y="293.81818181818176">ScheduledTask</node>
+    <node x="989.0" y="182.0">CnnCrawler</node>
+    <node x="617.5863095238096" y="293.0">NewsSitesObjects</node>
+    <node x="597.8164682539682" y="81.0">Crawler</node>
+    <node x="1164.8356643356644" y="376.35664335664336">Databases</node>
+    <node x="139.0" y="182.0">AljazeeraCrawler</node>
+    <node x="680.5117174492177" y="458.8776223776225">Main</node>
+    <node x="589.3164682539682" y="0.0">plotGraph</node>
+    <node x="650.0" y="182.0">SozcuCrawler</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Main" target="NewsSitesObjects">
+      <point x="-20.5" y="-15.5" />
+      <point x="702.1772186147188" y="400.8181818181818" />
+      <point x="703.5863095238096" y="349.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="MilliyetCrawler" target="Crawler">
+      <point x="0.0" y="-15.5" />
+      <point x="1212.5" y="132.0" />
+      <point x="692.5039682539682" y="132.0" />
+      <point x="44.1875" y="15.5" />
+    </edge>
+    <edge source="NewsSitesObjects" target="ScheduledTask">
+      <point x="76.44444444444446" y="-15.5" />
+      <point x="780.030753968254" y="273.0" />
+      <point x="1150.9545454545455" y="273.9090909090909" />
+      <point x="-37.5" y="15.5" />
+    </edge>
+    <edge source="AljazeeraCrawler" target="Crawler">
+      <point x="0.0" y="-15.5" />
+      <point x="221.0" y="142.0" />
+      <point x="616.7539682539682" y="142.0" />
+      <point x="-31.5625" y="15.5" />
+    </edge>
+    <edge source="NewsSitesObjects" target="AljazeeraCrawler">
+      <point x="-57.33333333333337" y="-15.5" />
+      <point x="646.2529761904761" y="263.0" />
+      <point x="221.0" y="263.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="NewsSitesObjects" target="SabahCrawler">
+      <point x="-19.111111111111086" y="-15.5" />
+      <point x="684.4751984126985" y="243.0" />
+      <point x="558.5" y="243.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="HurriyetCrawler" target="Crawler">
+      <point x="0.0" y="-15.5" />
+      <point x="890.0" y="152.0" />
+      <point x="667.2539682539682" y="152.0" />
+      <point x="18.9375" y="15.5" />
+    </edge>
+    <edge source="NewsSitesObjects" target="HurriyetCrawler">
+      <point x="19.111111111111086" y="-15.5" />
+      <point x="722.6974206349207" y="243.0" />
+      <point x="890.0" y="243.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="CnnCrawler" target="Crawler">
+      <point x="0.0" y="-15.5" />
+      <point x="1053.0" y="142.0" />
+      <point x="679.8789682539682" y="142.0" />
+      <point x="31.5625" y="15.5" />
+    </edge>
+    <edge source="NewsSitesObjects" target="BbcCrwler">
+      <point x="-76.44444444444446" y="-15.5" />
+      <point x="627.1418650793651" y="273.0" />
+      <point x="59.5" y="273.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="Main" target="Databases">
+      <point x="20.5" y="-15.5" />
+      <point x="1077.7226731601734" y="466.27272727272725" />
+      <point x="1229.6608391608393" y="464.10489510489515" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="NewsSitesObjects" target="CnnCrawler">
+      <point x="38.22222222222217" y="-15.5" />
+      <point x="741.8085317460318" y="253.0" />
+      <point x="1053.0" y="253.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="SozcuCrawler" target="Crawler">
+      <point x="0.0" y="-15.5" />
+      <point x="720.5" y="162.0" />
+      <point x="654.6289682539682" y="162.0" />
+      <point x="6.3125" y="15.5" />
+    </edge>
+    <edge source="OdatvCrawler" target="Crawler">
+      <point x="0.0" y="-15.5" />
+      <point x="395.00000000000006" y="152.0" />
+      <point x="629.3789682539682" y="152.0" />
+      <point x="-18.9375" y="15.5" />
+    </edge>
+    <edge source="Databases" target="ScheduledTask">
+      <point x="0.0" y="-15.5" />
+      <point x="37.5" y="15.5" />
+    </edge>
+    <edge source="NewsSitesObjects" target="MilliyetCrawler">
+      <point x="57.33333333333337" y="-15.5" />
+      <point x="760.9196428571429" y="263.0" />
+      <point x="1212.5" y="263.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="SabahCrawler" target="Crawler">
+      <point x="0.0" y="-15.5" />
+      <point x="558.5" y="162.0" />
+      <point x="642.0039682539682" y="162.0" />
+      <point x="-6.3125" y="15.5" />
+    </edge>
+    <edge source="NewsSitesObjects" target="SozcuCrawler">
+      <point x="0.0" y="-15.5" />
+      <point x="703.5863095238096" y="233.0" />
+      <point x="720.5" y="233.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="Crawler" target="plotGraph">
+      <point x="0.0" y="-15.5" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="NewsSitesObjects" target="OdatvCrawler">
+      <point x="-38.222222222222285" y="-15.5" />
+      <point x="665.3640873015872" y="253.0" />
+      <point x="395.00000000000006" y="253.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="BbcCrwler" target="Crawler">
+      <point x="0.0" y="-15.5" />
+      <point x="59.5" y="132.0" />
+      <point x="604.1289682539682" y="132.0" />
+      <point x="-44.1875" y="15.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.3000000000000003" x="909.8461538461537" y="377.5" />
+  <SelectedNodes>
+    <node>Main</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+

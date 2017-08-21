@@ -16,7 +16,7 @@ class plotGraph extends ApplicationFrame {
         ArrayList<String> dateLinks = new ArrayList();
 
         MongoClient mongoClient = new MongoClient("localhost", 27017); // connect to database
-        DB db = mongoClient.getDB("linksCounter2");
+        DB db = mongoClient.getDB("linksCounter");
         BasicDBObject searchQuery = new BasicDBObject();
         BasicDBObject fields = (BasicDBObject) new BasicDBObjectBuilder().add("newLinks", 1).add("_id", 0).get();
         DBCursor cursor = counter.find(searchQuery );
@@ -52,17 +52,13 @@ class plotGraph extends ApplicationFrame {
         setContentPane( chartPanel );
          while (cursor.hasNext()) {
               String news=  cursor.next().toString();
-            System.out.println(  "   "+ cursor.next());
+           // System.out.println(  "   "+ cursor.next());
         }
 
     }
 
     private DefaultCategoryDataset createDataset(ArrayList<Integer> couner, ArrayList<String> dateLinks) {
-        for (int i = 0; i < couner.size(); i++) {
-            System.out.println(couner.get(i));
-            System.out.println(dateLinks.get(i));
 
-        }
 //        int[] data = {500, 13, 60, 120, 80, 30};
 //        String[] vals = {"08:00", "12:00", "13:00", "16:00", "20:00", "00:00"};
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -72,9 +68,8 @@ class plotGraph extends ApplicationFrame {
             if (data ==null)
                 data = "";
 
-
             dataset.addValue(couner.get(i), "links",data );
-            System.out.println(dateLinks.get(i));
+
 
         }
         return dataset;

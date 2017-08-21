@@ -1,18 +1,22 @@
-import com.mongodb.*;
-import com.mongodb.client.*;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
-import com.mongodb.client.MongoDatabase;
-
-public class MilliyetCrawler extends Crawler {
+public class BbcCrwler extends Crawler {
     private  String linksNumberDatabaseName ;
     private  String linksCollectionName;
     private MongoClient mongoClient;
@@ -22,13 +26,14 @@ public class MilliyetCrawler extends Crawler {
     private MongoCollection<org.bson.Document> newsCollection;
     private MongoCollection<org.bson.Document> linksCounter;
     private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-    final  String  siteName = "Milliyet";
+    private final   String  siteName = "BBC";
 
-    public MilliyetCrawler() {
+    protected BbcCrwler() {
+
         String newsDatabaseName = "newsDB";
         linksNumberDatabaseName = "linksCounter";
-        String newscolection = "milliyetNews";
-        linksCollectionName = "milliyetCounter";
+        String newscolection = "BBCNews";
+        linksCollectionName = "BBCCounter";
 
         mongoClient = new MongoClient("localhost", 27017);/*  to Connect to MongoDB   */
         newsDB = mongoClient.getDatabase(newsDatabaseName); /*  to Connect to MongoDB   */
@@ -37,48 +42,55 @@ public class MilliyetCrawler extends Crawler {
         linksCounter = linksNumberDB.getCollection(linksCollectionName);
         newsList = new ArrayList<String>();
         newlinks = new ArrayList<String>();
+
     }
 
     public void getLinks() throws Exception {
-        ArrayList<String> linksList;
-        linksList = new ArrayList<String>();
+        newlinks = new ArrayList<String>();
+        newsList = new ArrayList<String>();
         Document doc = null;
         try {
-            doc = Jsoup.connect("http://www.milliyet.com.tr/").get();
+            doc = Jsoup.connect("http://www.bbc.com/turkce").get();
         } catch (IOException e) {
             System.out.println("Enter valid url");
         }
-        org.jsoup.select.Elements links1 = doc.select(".flashbar   a");
-        org.jsoup.select.Elements links2 = doc.select(".flashbar1 .top_p1 a");
-        org.jsoup.select.Elements links3 = doc.select(".flashbar1 .top_p2 a");
-        org.jsoup.select.Elements links4 = doc.select(".flashbar1 .tnw a");
-        org.jsoup.select.Elements links5 = doc.select("#mnst11   a");
+        ArrayList<String> linksList = new ArrayList<String>();
+
+        Elements links1 = doc.select("#comp-top-story-1 > div > div a");
+        Elements links2 = doc.select("#comp-top-story-2 > div a");
+        Elements links3 = doc.select("#comp-top-story-3 > div > div a");
 
         extractLinks(links1, linksList);
         extractLinks(links2, linksList);
         extractLinks(links3, linksList);
-        extractLinks(links4, linksList);
-        extractLinks(links5, linksList);
+        ArrayList<String> newLinksList =new ArrayList<String>();
+
+        System.out.println("size of new links array is "+ linksList.size());
 
         for (int i = 0; i < linksList.size(); i++) {
-            System.out.println("Links list " + linksList.get(i));
+            if (!linksList.get(i).contains("http"))
+                newLinksList.add("http://www.bbc.com/" + linksList.get(i)); // to add the main link for the sub_link
+            else
+                newLinksList.add(linksList.get(i));
         }
 
-        newlinks = checkIfLinkIsAlreadyExist(linksList);
-        newsList = getNewUsingBoilerPipe(newlinks);
+        newlinks=checkIfLinkIsAlreadyExist(newLinksList);
+       newsList = getNewUsingBoilerPipe(newlinks);
+
 
     }
 
-    public ArrayList<String> checkIfLinkIsAlreadyExist(ArrayList<String> linksList) {
+    public ArrayList<String> checkIfLinkIsAlreadyExist(ArrayList<String> linksList ) {
 
         return super.checkIfLinkIsAlreadyExist(linksList, this.newsCollection, this.newsDB);
     }
+
 
     private void extractLinks(Elements links, ArrayList<String> linksList) {
         for (Element element : links) {
             String link1 = element.attr("href");
             if (!linksList.contains(link1)) {
-                linksList.add(link1);
+                linksList.add("" + link1);
             }
         }
     }
@@ -86,10 +98,17 @@ public class MilliyetCrawler extends Crawler {
     public void storeInDatabase() {
         System.out.println(newsCollection.getNamespace());
         System.out.println(linksCounter.getNamespace());
+        for (int i = 0; i <newlinks.size() ; i++) {
+            System.out.println(newlinks.get(i));
+        }
+       storeInMongodb(newlinks, newsList, newsCollection,linksCounter ,siteName );
 
+    }
 
-        storeInMongodb(newlinks, newsList, newsCollection, linksCounter, siteName);
-
+    @Override
+    public void storeInMongodb(ArrayList<String> linksList, ArrayList<String> newsList, MongoCollection<org.bson.Document> collection,
+                               MongoCollection<org.bson.Document> collection2, String webSiteName) {
+        super.storeInMongodb(linksList, newsList, collection, collection2, webSiteName);
     }
 
     public ArrayList<String> getNewUsingBoilerPipe(ArrayList<String> linksList) throws IOException {
@@ -97,11 +116,13 @@ public class MilliyetCrawler extends Crawler {
         return super.getNewUsingBoilerPipe(linksList);
     }
 
-    public void plotGraph() {
+
+
+    public void plotGraph( ) {
 
         DB db = mongoClient.getDB(linksNumberDatabaseName);
         DBCollection counter = db.getCollection(linksCollectionName);
-         graphs(siteName, counter);
+        graphs(siteName, counter);
 
     }
 
@@ -109,5 +130,6 @@ public class MilliyetCrawler extends Crawler {
     public void graphs(String webSiteName, DBCollection newsInfo) {
         super.graphs(webSiteName, newsInfo);
     }
+
 
 }
