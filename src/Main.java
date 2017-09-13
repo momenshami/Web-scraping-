@@ -4,9 +4,19 @@
   *
   *
   * */
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import org.slf4j.LoggerFactory;
+
+
 public class Main {
+    final static Level LOG_LEVEL = Level.ERROR;
 
     public static void main(String[] args) throws Exception {
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        Logger rootLogger = loggerContext.getLogger("org.mongodb.driver");
+        rootLogger.setLevel(LOG_LEVEL);
         NewsSitesObjects creatObjets = new NewsSitesObjects(); // creating objects for each website
         creatObjets.createEightObjcet();
 
