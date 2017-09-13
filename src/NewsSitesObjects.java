@@ -10,15 +10,9 @@ public class NewsSitesObjects {
         int z = 0;
        // for (int i = 0; i < 8; i++) {
             Crawler milliyet = new MilliyetCrawler();
-            Crawler sabah = new SabahCrawler();
-            Crawler bbc = new BbcCrwler();
-            Crawler cnn = new CnnCrawler();
-            Crawler odatv = new OdatvCrawler();
-            Crawler sozcu = new SozcuCrawler();
-            Crawler aljazeera = new AljazeeraCrawler();
             Crawler hurriyet = new HurriyetCrawler();
 
-            Crawler[] array = {milliyet, sabah, bbc, cnn, aljazeera, sozcu, hurriyet, odatv}; // Array for objects
+            Crawler[] array = {milliyet, hurriyet}; // Array for objects
             for (int j = 0; j < array.length; j++) {
                 array[j].getLinks(); // to get links from sites and store them in the Arraylist.
                 array[j].storeInDatabase(); // to store links inside Databases

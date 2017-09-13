@@ -13,9 +13,8 @@ import java.util.*;
 public class HurriyetCrawler extends Crawler {
     private  String linksNumberDatabaseName ;
     private  String linksCollectionName;
-    private   ArrayList<String> newsList  ;
+    private   ArrayList<String> newsList;
     private   ArrayList<String> newlinks;
-    private   MongoClient mongoClient;
     private   MongoDatabase newsDB;
     private   MongoCollection<org.bson.Document> newsCollection;
     private   MongoCollection<org.bson.Document> linksCounter;
@@ -28,9 +27,8 @@ public class HurriyetCrawler extends Crawler {
         linksNumberDatabaseName = "linksCounter1";
         String newscolection = "news";
         linksCollectionName = "hurriyetCounter";
-        mongoClient = new MongoClient("localhost", 27017);/*  to Connect to MongoDB   */
-        newsDB = mongoClient.getDatabase(newsDatabaseName); /*  to Connect to MongoDB   */
-        MongoDatabase linksNumberDB = mongoClient.getDatabase(linksNumberDatabaseName);
+        newsDB = MongoConnection.getDatabase(newsDatabaseName); /*  to Connect to MongoDB   */
+        MongoDatabase linksNumberDB = MongoConnection.getDatabase(linksNumberDatabaseName);
         newsCollection = newsDB.getCollection(newscolection); // create collection
         linksCounter = linksNumberDB.getCollection(linksCollectionName);
         newsList = new ArrayList<String>();
@@ -87,8 +85,7 @@ public class HurriyetCrawler extends Crawler {
     }
 
     public void plotGraph( ) {
-        DB db = mongoClient.getDB(linksNumberDatabaseName);
-        DBCollection counter = db.getCollection(linksCollectionName);
+        DBCollection counter =  MongoConnection.getDBCollection(linksNumberDatabaseName, linksCollectionName);
         graphs(siteName, counter);
     }
 

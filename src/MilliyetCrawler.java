@@ -15,8 +15,6 @@ import com.mongodb.client.MongoDatabase;
 public class MilliyetCrawler extends Crawler {
     private  String linksNumberDatabaseName ;
     private  String linksCollectionName;
-    private MongoClient mongoClient;
-    private MongoDatabase newsDB;
     private ArrayList<String> newsList;
     private ArrayList<String> newlinks;
     private MongoCollection<org.bson.Document> newsCollection;
@@ -30,10 +28,9 @@ public class MilliyetCrawler extends Crawler {
         String newscolection = "news";
         linksCollectionName = "milliyetCounter";
 
-        mongoClient = new MongoClient("localhost", 27017);/*  to Connect to MongoDB   */
-        newsDB = mongoClient.getDatabase(newsDatabaseName); /*  to Connect to MongoDB   */
-        MongoDatabase linksNumberDB = mongoClient.getDatabase(linksNumberDatabaseName);
-        newsCollection = newsDB.getCollection(newscolection); // create collection
+        MongoConnection.getDatabase(newsDatabaseName); /*  to Connect to MongoDB   */
+        MongoDatabase linksNumberDB = MongoConnection.getDatabase(linksNumberDatabaseName);
+        newsCollection = MongoConnection.getCollection(newscolection); // create collection
         linksCounter = linksNumberDB.getCollection(linksCollectionName);
         newsList = new ArrayList<String>();
         newlinks = new ArrayList<String>();
@@ -71,7 +68,7 @@ public class MilliyetCrawler extends Crawler {
 
     public ArrayList<String> checkIfLinkIsAlreadyExist(ArrayList<String> linksList) {
 
-        return super.checkIfLinkIsAlreadyExist(linksList, this.newsCollection, this.newsDB);
+        return super.checkIfLinkIsAlreadyExist(linksList, this.newsCollection, MongoConnection.getDatabase("news"));
     }
 
     private void extractLinks(Elements links, ArrayList<String> linksList) {
@@ -98,10 +95,8 @@ public class MilliyetCrawler extends Crawler {
     }
 
     public void plotGraph() {
-
-        DB db = mongoClient.getDB(linksNumberDatabaseName);
-        DBCollection counter = db.getCollection(linksCollectionName);
-         graphs(siteName, counter);
+        DBCollection counter = MongoConnection.getDBCollection(linksNumberDatabaseName, linksCollectionName);
+        graphs(siteName, counter);
 
     }
 
