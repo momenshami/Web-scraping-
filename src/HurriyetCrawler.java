@@ -5,14 +5,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
 
 public class HurriyetCrawler extends Crawler {
     private  String linksNumberDatabaseName ;
@@ -28,11 +24,10 @@ public class HurriyetCrawler extends Crawler {
     private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public HurriyetCrawler() {
-        String newsDatabaseName = "newsDB";
-        linksNumberDatabaseName = "linksCounter";
-        String newscolection = "hurriyetNews";
+        String newsDatabaseName = "news";
+        linksNumberDatabaseName = "linksCounter1";
+        String newscolection = "news";
         linksCollectionName = "hurriyetCounter";
-
         mongoClient = new MongoClient("localhost", 27017);/*  to Connect to MongoDB   */
         newsDB = mongoClient.getDatabase(newsDatabaseName); /*  to Connect to MongoDB   */
         MongoDatabase linksNumberDB = mongoClient.getDatabase(linksNumberDatabaseName);

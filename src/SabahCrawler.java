@@ -33,9 +33,9 @@ public class SabahCrawler extends  Crawler {
     private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public SabahCrawler() {
-        String newsDatabaseName = "newsDB";
-        linksNumberDatabaseName = "linksCounter";
-        String newscolection = "sabahNews";
+        String newsDatabaseName = "news";
+        linksNumberDatabaseName = "linksCounter1";
+        String newscolection = "news";
         linksCollectionName = "sabahCounter";
 
         mongoClient = new MongoClient("localhost", 27017);/*  to Connect to MongoDB   */

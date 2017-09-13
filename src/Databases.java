@@ -1,5 +1,4 @@
 import com.mongodb.*;
-
 import java.util.Timer;
 
 public class Databases {
@@ -26,19 +25,7 @@ public class Databases {
 
     }
 
-    private static void testDatabase1() {
 
-
-    }
-
-    private static void testDatabase2() {
-         DB db = mongo.getDB("news");
-        DB db1 = mongo.getDB("news2");
-        String  collections[]= {"hurriyetTables","BBCTables","milliyetTables","sozcuTables",
-                "CnnTable","sabahTables","odatvTables"};
-        printdatapase(db, db1,collections);
-
-    }
 
     private static void printdatapase(DB db1, DB db, String[] counter) {
         int period = 3000;//10800000

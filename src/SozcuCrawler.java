@@ -28,9 +28,9 @@ public class SozcuCrawler extends Crawler {
     private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public SozcuCrawler() {
-        String newsDatabaseName = "newsDB";
-        linksNumberDatabaseName = "linksCounter";
-        String newscolection = "sozcuNews";
+        String newsDatabaseName = "news";
+        linksNumberDatabaseName = "linksCounter1";
+        String newscolection = "news";
         linksCollectionName = "sozcuCounter";
 
         mongoClient = new MongoClient("localhost", 27017);/*  to Connect to MongoDB   */

@@ -32,9 +32,9 @@ public class CnnCrawler  extends Crawler {
 
     public CnnCrawler() {
 
-        String newsDatabaseName = "newsDB";
-        linksNumberDatabaseName = "linksCounter";
-        String newscolection = "CNNNews";
+        String newsDatabaseName = "news";
+        linksNumberDatabaseName = "linksCounter1";
+        String newscolection = "news";
         linksCollectionName = "CNNCounter";
 
         mongoClient = new MongoClient("localhost", 27017);/*  to Connect to MongoDB   */

@@ -23,9 +23,9 @@ public class AljazeeraCrawler extends Crawler {
     private MongoCollection<org.bson.Document> linksCounter;
 
     public AljazeeraCrawler() {
-        String newsDatabaseName = "newsDB";
-        linksNumberDatabaseName = "linksCounter";
-        String newscolection = "aljazeeraNews";
+        String newsDatabaseName = "news";
+        linksNumberDatabaseName = "linksCounter1";
+        String newscolection = "news";
         linksCollectionName = "aljazeeraCounter";
 
         mongoClient = new MongoClient("localhost", 27017);/*  to Connect to MongoDB   */
@@ -46,13 +46,10 @@ public class AljazeeraCrawler extends Crawler {
             doc = Jsoup.connect("http://www.aljazeera.com.tr/front").get();
         } catch (IOException e) {
             System.out.println("Enter valid url");
-
         }
-
         Elements links1 = doc.select("#block-boxes-aljazeera-main-promo-box a");
-
-
         extractLinks(links1, linksList);
+
         for (int i = 0; i < linksList.size(); i++) {
             System.out.println(linksList.get(i));
         }
@@ -73,8 +70,6 @@ public class AljazeeraCrawler extends Crawler {
     public void storeInDatabase() {
         System.out.println(newsCollection.getNamespace());
         System.out.println(linksCounter.getNamespace());
-
-
         storeInMongodb(newlinks, newsList, newsCollection, linksCounter, siteName);
 
     }

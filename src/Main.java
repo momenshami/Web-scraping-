@@ -1,15 +1,19 @@
-
-
+/*
+ *
+  * This project about web scraping for eight Turkish websites
+  *
+  *
+  * */
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        NewsSitesObjects creatObjets = new NewsSitesObjects();
-        Databases dbs = new Databases();
+        NewsSitesObjects creatObjets = new NewsSitesObjects(); // creating objects for each website
         creatObjets.createEightObjcet();
-        dbs.showWhatInsideDatabases();
+
+//       Databases dbs = new Databases(); // if we wannna see what is inside the Databases
+//        dbs.showWhatInsideDatabases();
 
     }
-
 
 }
 

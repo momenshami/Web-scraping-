@@ -30,9 +30,9 @@ public class BbcCrwler extends Crawler {
 
     protected BbcCrwler() {
 
-        String newsDatabaseName = "newsDB";
-        linksNumberDatabaseName = "linksCounter";
-        String newscolection = "BBCNews";
+        String newsDatabaseName = "news";
+        linksNumberDatabaseName = "linksCounter1";
+        String newscolection = "news";
         linksCollectionName = "BBCCounter";
 
         mongoClient = new MongoClient("localhost", 27017);/*  to Connect to MongoDB   */
