@@ -4,12 +4,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import com.mongodb.client.MongoDatabase;
 
 public class MilliyetCrawler extends Crawler {
@@ -27,6 +25,7 @@ public class MilliyetCrawler extends Crawler {
         linksNumberDatabaseName = "linksCounter1";
         String newscolection = "news";
         linksCollectionName = "milliyetCounter";
+
 
         MongoConnection.getDatabase(newsDatabaseName); /*  to Connect to MongoDB   */
         MongoDatabase linksNumberDB = MongoConnection.getDatabase(linksNumberDatabaseName);
@@ -63,7 +62,6 @@ public class MilliyetCrawler extends Crawler {
 
         newlinks = checkIfLinkIsAlreadyExist(linksList);
         newsList = getNewUsingBoilerPipe(newlinks);
-
     }
 
     public ArrayList<String> checkIfLinkIsAlreadyExist(ArrayList<String> linksList) {
@@ -83,7 +81,6 @@ public class MilliyetCrawler extends Crawler {
     public void storeInDatabase() {
         System.out.println(newsCollection.getNamespace());
         System.out.println(linksCounter.getNamespace());
-
 
         storeInMongodb(newlinks, newsList, newsCollection, linksCounter, siteName);
 

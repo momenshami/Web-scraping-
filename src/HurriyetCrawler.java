@@ -27,9 +27,12 @@ public class HurriyetCrawler extends Crawler {
         linksNumberDatabaseName = "linksCounter1";
         String newscolection = "news";
         linksCollectionName = "hurriyetCounter";
+
+
         newsDB = MongoConnection.getDatabase(newsDatabaseName); /*  to Connect to MongoDB   */
-        MongoDatabase linksNumberDB = MongoConnection.getDatabase(linksNumberDatabaseName);
         newsCollection = newsDB.getCollection(newscolection); // create collection
+
+        MongoDatabase linksNumberDB = MongoConnection.getDatabase(linksNumberDatabaseName);
         linksCounter = linksNumberDB.getCollection(linksCollectionName);
         newsList = new ArrayList<String>();
         newlinks = new ArrayList<String>();

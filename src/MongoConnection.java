@@ -1,3 +1,4 @@
+import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import org.bson.Document;
 import com.mongodb.MongoClient;
@@ -24,7 +25,12 @@ public class MongoConnection {
         return getMongoClient().getDatabase("news");
     }
 
-    // Utility method to get database instance
+
+    /**
+     *
+     * @param name to get data database instance
+     * @return retrun database
+     */
     public static MongoDatabase getDatabase(String name) {
         return getMongoClient().getDatabase(name);
     }
@@ -44,6 +50,10 @@ public class MongoConnection {
         return getMongoClient()
                 .getDB(linksNumberDatabaseName)
                 .getCollection(linksCollectionName);
+    }
+
+    public static DB getDB(String name){
+        return  getMongoClient().getDB(name);
     }
 
 }

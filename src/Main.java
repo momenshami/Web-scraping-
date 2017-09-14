@@ -14,6 +14,7 @@ public class Main {
     final static Level LOG_LEVEL = Level.ERROR;
 
     public static void main(String[] args) throws Exception {
+
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         Logger rootLogger = loggerContext.getLogger("org.mongodb.driver");
         rootLogger.setLevel(LOG_LEVEL);
@@ -21,7 +22,7 @@ public class Main {
         creatObjets.createEightObjcet();
 
 //       Databases dbs = new Databases(); // if we wannna see what is inside the Databases
-//        dbs.showWhatInsideDatabases();
+//       dbs.showWhatInsideDatabases();
 
     }
 

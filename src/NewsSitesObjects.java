@@ -18,9 +18,7 @@ public class NewsSitesObjects {
                 array[j].storeInDatabase(); // to store links inside Databases
                 array[j].plotGraph(); // to plot the graph
             }
-            System.out.println("                             %d                                     " + z);
-            System.out.println("********************************************************************** ");
-            Thread.sleep(period);
+
 //            if (i == 7) {
 //                System.out.println("Application Terminates ");
 //                System.exit(0);
