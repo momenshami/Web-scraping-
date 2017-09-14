@@ -1,6 +1,5 @@
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,37 +10,17 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class AljazeeraCrawler extends Crawler {
-    private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-    private static String siteName = "Aljazeera";
-    private String linksNumberDatabaseName;
-    private String linksCollectionName;
-    private ArrayList<String> newsList;
-    private ArrayList<String> newlinks;
-    private MongoClient mongoClient;
-    private MongoDatabase newsDB;
-    private MongoCollection<org.bson.Document> newsCollection;
-    private MongoCollection<org.bson.Document> linksCounter;
+     private static String siteName = "Aljazeera";
 
-    public AljazeeraCrawler() {
-        String newsDatabaseName = "news";
-        linksNumberDatabaseName = "linksCounter1";
-        String newscolection = "news";
-        linksCollectionName = "aljazeeraCounter";
 
-        mongoClient = new MongoClient("localhost", 27017);/*  to Connect to MongoDB   */
-        newsDB = mongoClient.getDatabase(newsDatabaseName); /*  to Connect to MongoDB   */
-        MongoDatabase linksNumberDB = mongoClient.getDatabase(linksNumberDatabaseName);
-        newsCollection = newsDB.getCollection(newscolection); // create collection
-        linksCounter = linksNumberDB.getCollection(linksCollectionName);
-        newsList = new ArrayList<String>();
-        newlinks = new ArrayList<String>();
+    public AljazeeraCrawler(String s) {
+      super(s);
     }
 
 
     public void getLinks() throws Exception {
         ArrayList<String> linksList = new ArrayList<String>();
-        newsList = new ArrayList<String>();
-        Document doc = null;
+         Document doc = null;
         try {
             doc = Jsoup.connect("http://www.aljazeera.com.tr/front").get();
         } catch (IOException e) {
@@ -63,7 +42,7 @@ public class AljazeeraCrawler extends Crawler {
     public ArrayList<String> checkIfLinkIsAlreadyExist(ArrayList<String> linksList) {
 
 
-        return super.checkIfLinkIsAlreadyExist(linksList, this.newsCollection, this.newsDB);
+        return super.checkIfLinkIsAlreadyExist(linksList, this.newsCollection, MongoConnection.getDatabase("news"));
     }
 
 
@@ -99,11 +78,8 @@ public class AljazeeraCrawler extends Crawler {
     }
 
     public void plotGraph() {
-
-        DB db = mongoClient.getDB(linksNumberDatabaseName);
-        DBCollection counter = db.getCollection(linksCollectionName);
+        DBCollection counter =  MongoConnection.getDBCollection(linksNumberDatabaseName, linksCollectionName);
         graphs(siteName, counter);
-
 
     }
 

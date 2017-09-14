@@ -1,6 +1,4 @@
 import com.mongodb.*;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,31 +9,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class HurriyetCrawler extends Crawler {
-    private  String linksNumberDatabaseName ;
-    private  String linksCollectionName;
-    private   ArrayList<String> newsList;
-    private   ArrayList<String> newlinks;
-    private   MongoDatabase newsDB;
-    private   MongoCollection<org.bson.Document> newsCollection;
-    private   MongoCollection<org.bson.Document> linksCounter;
+
     private static    String  siteName = "Hurriyet";
 
     private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-    public HurriyetCrawler() {
-        String newsDatabaseName = "news";
-        linksNumberDatabaseName = "linksCounter1";
-        String newscolection = "news";
-        linksCollectionName = "hurriyetCounter";
-
-
-        newsDB = MongoConnection.getDatabase(newsDatabaseName); /*  to Connect to MongoDB   */
-        newsCollection = newsDB.getCollection(newscolection); // create collection
-
-        MongoDatabase linksNumberDB = MongoConnection.getDatabase(linksNumberDatabaseName);
-        linksCounter = linksNumberDB.getCollection(linksCollectionName);
-        newsList = new ArrayList<String>();
-        newlinks = new ArrayList<String>();
+    public HurriyetCrawler(String s) {
+        super(s);
     }
 
 
@@ -48,7 +28,7 @@ public class HurriyetCrawler extends Crawler {
 
         }
         ArrayList<String> linksList = new ArrayList<String>();
-        newsList = new ArrayList<String>();
+
 
         Elements links1 = doc.select("body > main > div > div > div:nth-child(1) > div a");
         Elements links2 = doc.select("body > main > div > div > div:nth-child(4) a");
@@ -66,7 +46,7 @@ public class HurriyetCrawler extends Crawler {
     }
     public ArrayList<String> checkIfLinkIsAlreadyExist(ArrayList<String> linksList ) {
 
-        return super.checkIfLinkIsAlreadyExist(linksList, this.newsCollection, this.newsDB);
+        return super.checkIfLinkIsAlreadyExist(linksList, this.newsCollection, MongoConnection.getDatabase("news"));
     }
 
 

@@ -1,5 +1,4 @@
 import com.mongodb.*;
-import com.mongodb.client.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -8,31 +7,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.io.IOException;
 import java.util.ArrayList;
-import com.mongodb.client.MongoDatabase;
 
 public class MilliyetCrawler extends Crawler {
-    private  String linksNumberDatabaseName ;
-    private  String linksCollectionName;
-    private ArrayList<String> newsList;
-    private ArrayList<String> newlinks;
-    private MongoCollection<org.bson.Document> newsCollection;
-    private MongoCollection<org.bson.Document> linksCounter;
-    private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-    final  String  siteName = "Milliyet";
 
-    public MilliyetCrawler() {
-        String newsDatabaseName = "news";
-        linksNumberDatabaseName = "linksCounter1";
-        String newscolection = "news";
-        linksCollectionName = "milliyetCounter";
+     final  String  siteName = "Milliyet";
 
-
-        MongoConnection.getDatabase(newsDatabaseName); /*  to Connect to MongoDB   */
-        MongoDatabase linksNumberDB = MongoConnection.getDatabase(linksNumberDatabaseName);
-        newsCollection = MongoConnection.getCollection(newscolection); // create collection
-        linksCounter = linksNumberDB.getCollection(linksCollectionName);
-        newsList = new ArrayList<String>();
-        newlinks = new ArrayList<String>();
+    public MilliyetCrawler(String s) {
+        super(s);
     }
 
     public void getLinks() throws Exception {
@@ -44,11 +25,11 @@ public class MilliyetCrawler extends Crawler {
         } catch (IOException e) {
             System.out.println("Enter valid url");
         }
-        org.jsoup.select.Elements links1 = doc.select(".flashbar   a");
+        org.jsoup.select.Elements links1 = doc.select(".flashbar a");
         org.jsoup.select.Elements links2 = doc.select(".flashbar1 .top_p1 a");
         org.jsoup.select.Elements links3 = doc.select(".flashbar1 .top_p2 a");
         org.jsoup.select.Elements links4 = doc.select(".flashbar1 .tnw a");
-        org.jsoup.select.Elements links5 = doc.select("#mnst11   a");
+        org.jsoup.select.Elements links5 = doc.select("#mnst11 a");
 
         extractLinks(links1, linksList);
         extractLinks(links2, linksList);

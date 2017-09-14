@@ -15,8 +15,7 @@ class plotGraph extends ApplicationFrame {
         ArrayList<Integer> linksNumber = new ArrayList();
         ArrayList<String> dateLinks = new ArrayList();
 
-        MongoClient mongoClient = new MongoClient("localhost", 27017); // connect to database
-        DB db = mongoClient.getDB("linksCounter");
+        DB db = MongoConnection.getDB("linksCounter1");
         BasicDBObject searchQuery = new BasicDBObject();
         BasicDBObject fields = (BasicDBObject) new BasicDBObjectBuilder().add("newLinks", 1).add("_id", 0).get();
         DBCursor cursor = counter.find(searchQuery );
@@ -41,8 +40,7 @@ class plotGraph extends ApplicationFrame {
       }
 
         JFreeChart lineChart = ChartFactory.createLineChart(
-                chartTitle,
-                " ","Number of links",
+                chartTitle," ","Number of links",
                 createDataset(linksNumber,dateLinks),
                 PlotOrientation.VERTICAL,
                 true,true,false);

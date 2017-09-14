@@ -16,6 +16,26 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public abstract class Crawler {
+    protected  String linksNumberDatabaseName = "linksCounter1" ;
+    protected  String linksCollectionName;
+    protected ArrayList<String> newsList;
+    protected ArrayList<String> newlinks;
+    protected MongoCollection<org.bson.Document> newsCollection;
+    protected MongoCollection<org.bson.Document> linksCounter;
+    private static String dbName = "news";
+
+
+
+    public Crawler(String linksCollectionName) {
+        this.linksCollectionName = linksCollectionName;
+        newsCollection = MongoConnection.getCollection(dbName);
+        linksCounter = MongoConnection
+                .getDatabase(linksNumberDatabaseName)
+                .getCollection(linksCollectionName);
+        newsList = new ArrayList<String>();
+        newlinks = new ArrayList<String>();
+    }
+
     private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public abstract void getLinks() throws Exception;
@@ -23,10 +43,6 @@ public abstract class Crawler {
     public abstract void plotGraph( );
 
     public abstract void storeInDatabase();
-
-    public Crawler() {
-
-    }
 
     public ArrayList<String> getNewUsingBoilerPipe(ArrayList<String> linksList) throws IOException {
         ArrayList<String> newsList = new ArrayList<String>();
